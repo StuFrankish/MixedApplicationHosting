@@ -26,9 +26,19 @@ app.MapRazorPages();
 app.MapControllers();
 
 // Blazor WASM under /admin
-app.UsePathBase("/admin");
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
-app.MapFallbackToFile("{*path:nonfile}", "index.html");
+app.Map("/admin", adminApp =>
+{
+    adminApp.UseBlazorFrameworkFiles();
+    adminApp.UseStaticFiles();
+
+    adminApp.UseRouting();
+    adminApp.UseAuthorization();
+
+    adminApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+        endpoints.MapFallbackToFile("{*path:nonfile}", "index.html");
+    });
+});
 
 app.Run();
